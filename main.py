@@ -213,6 +213,7 @@ if authentication_status:
                     temp.to_excel('Data-Tokopedia//%s - Tokopedia - %s.xlsx' %(current_time, key), index=False)
             else:
                 for key in keyword:
+                    print('PASSSS')
                     temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
                     temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
 
