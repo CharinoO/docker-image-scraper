@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json 
 import pandas as pd 
 import math
+from stqdm import stqdm
 
 #PILIHAN SORT BY : 'terkait', 'terbaru', 'terlaris', 'termurah', 'termahal'
 def search_sort_by(val):
@@ -72,7 +73,7 @@ def store_search(store_url_link, keyword, max_page, sort_by_val, info=False):
             print('total page: ' + str(page_count))
             #MELAKUKAN PENARIKAN DATA PER PAGE DI LOOPING
             product_list = []
-            for i in range (max_page):
+            for i in stqdm(range (max_page)):
                 print('pulling data from page-' + str(i+1) +'...')
                 params = (
                     ('by', 'relevancy'),

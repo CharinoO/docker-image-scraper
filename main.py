@@ -23,6 +23,7 @@ signature = "123456987654qwertyplmedcpoACENCOA909928.-wefaac--vwev2"
 authenticator = stauth.authenticate(names,usernames,hashed_passwords,
     cookie_name, signature,cookie_expiry_days=1)
 
+st.set_page_config(page_title="Spider Scraper", layout='wide')
 
 name, authentication_status = authenticator.login('Login','main')
 
@@ -47,6 +48,33 @@ def res_filter(name):
     
     return val[name]
 
+def show_dataset():
+    src = st.selectbox('Data Source', ['Tokopedia', 'Shopee'])
+    if src == 'Tokopedia':
+        folder = os.listdir('Data-Tokopedia/')
+        folder.sort(reverse=True)
+        if folder:
+            res = st.selectbox('Dataset', folder)
+            df  =  pd.read_excel('Data-Tokopedia/'+ res)
+            st.write('***Result**' , df)
+
+            data = df.to_csv().encode('utf-8')
+            st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+        else:
+            st.warning("No datasets found")
+    else:
+        folder = os.listdir('Data-Shopee/')
+        folder.sort(reverse=True)
+        if folder:
+            res = st.selectbox('Dataset', folder)
+            df  =  pd.read_excel('Data-Shopee/'+ res)
+            st.write('***Result**' , df)
+
+            data = df.to_csv().encode('utf-8')
+            st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+        else:
+            st.warning("No datasets found")
+
 if authentication_status:
     
     with st.sidebar:
@@ -67,7 +95,9 @@ if authentication_status:
                 if keyword:
                     total_page = ''
                     for key in keyword:
+                        print("PASS Through")
                         info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
+                        print("PASS Through - 2")
                         total_page = total_page + '%s : %s\n'%(key, info)
                 pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                 start_crawl = st.button('Scrape Website')
@@ -180,21 +210,14 @@ if authentication_status:
             if option == 'Tokopedia':
                 for key in keyword:
                     temp = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=int(pages))
-                    temp.to_excel('Data/%s - Tokopedia - %s.xlsx' %(current_time, key), index=False)
+                    temp.to_excel('Data-Tokopedia//%s - Tokopedia - %s.xlsx' %(current_time, key), index=False)
             else:
                 for key in keyword:
                     temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
-                    temp.to_excel('Data/%s - Shopee - %s.xlsx' %(current_time, current_time), index=False)
+                    temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
 
         with st.container():
-            folder = os.listdir('Data/')
-            if folder:
-                res = st.selectbox('Dataset', folder)
-                df  =  pd.read_excel('Data/'+ res)
-                st.write('***Result**' , df)
-
-                data = df.to_csv().encode('utf-8')
-                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+            show_dataset()
         
         
                 
@@ -222,11 +245,11 @@ if authentication_status:
                     if st.session_state.page_awal:
                         isSuccess = True
                         df = Tokopedia(Search=shopLink).get_shop_products(page=int(st.session_state.page_awal), sort=sort_by(filter_by))
-                        df.to_excel('Data/%s - Tokopedia.xlsx' %(current_time), index=False)
+                        df.to_excel('Data-Tokopedia//%s - Tokopedia.xlsx' %(current_time), index=False)
                     else:
                         isSuccess = True
                         df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                        df.to_excel('Data/%s -  Tokopedia.xlsx' %(current_time), index=False)
+                        df.to_excel('Data-Tokopedia//%s -  Tokopedia.xlsx' %(current_time), index=False)
                 except:
                     st.error('Please input Shop link address')
                     isSuccess = False
@@ -237,12 +260,12 @@ if authentication_status:
                     for key in keyword:
 
                         temp = store_search(shopLink, key, int(pages), filter_by)
-                        temp.to_excel('Data/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
+                        temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
                 else:
                     now = datetime.now()
                     current_time = now.strftime("%Y-%m-%d-%H-%M")
                     df = store_all_search(shopLink, int(pages), filter_by)
-                    df.to_excel('Data/%s - Shopee.xlsx' %(current_time), index=False)
+                    df.to_excel('Data-Shopee/%s - Shopee.xlsx' %(current_time), index=False)
 
                 
             # with st.expander('Result Details'):
@@ -260,15 +283,7 @@ if authentication_status:
             #     st.write('**Result**', df)
 
         with st.container():
-            folder = os.listdir('Data/')
-            folder.sort(reverse=True)
-            if folder:
-                res = st.selectbox('Dataset', folder)
-                df  =  pd.read_excel('Data/'+ res)
-                st.write('***Result**' , df)
-
-                data = df.to_csv().encode('utf-8')
-                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
-
+            show_dataset()
+            
 
 

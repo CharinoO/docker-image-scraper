@@ -3,6 +3,7 @@ import requests
 import json 
 import pandas as pd 
 import math
+from stqdm import stqdm
 
 
 class Shopee:
@@ -55,7 +56,7 @@ class Shopee:
                 print('total page: ' + str(page_count))
                 #MELAKUKAN PENARIKAN DATA PER PAGE DI LOOPING
                 product_list = []
-                for i in range (max_page):
+                for i in stqdm(range (max_page)):
                     print('pulling data from page-' + str(i+1) +'...')
                     params = (
                         ('by', 'relevancy'),

@@ -2,6 +2,7 @@ from numpy import NaN
 import json
 import requests as req
 import pandas as pd
+from stqdm import stqdm
 
 class Tokopedia:
     
@@ -93,7 +94,7 @@ class Tokopedia:
       
       if page:
           df = pd.DataFrame()
-          for halaman in range(1, page + 1):
+          for halaman in stqdm(range(1, page + 1)):
               temp = getShopProduct(shopID,  shopLoc, shopName, halaman)
               df = pd.concat([df, temp], ignore_index=True)
       

@@ -2,6 +2,7 @@ from numpy import NaN
 import json
 import requests as req
 import pandas as pd
+from stqdm import stqdm
 
 class Tokopedia:
     
@@ -25,9 +26,9 @@ class Tokopedia:
     def get_keys_products(self, sort_val, pages, info=False):
 
         
-        
+      print("mini pass Through - 1")
       request_products = json.loads(req.post(self.ENDPOINT, json = self.PAYLOAD).content)
-      
+      print("mini pass Through - 2")
 
       totalProducts = request_products['data']['ace_search_product_v4']['header']['totalDataText']
 
@@ -68,6 +69,8 @@ class Tokopedia:
             sold = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['labelGroups'][-1]['title']
             if sold == 'Cashback':
               sold = NaN
+            elif ~sold.contains('Terjual'):
+              sold = NaN
           except:
             sold = NaN
           original_price = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['originalPrice']
@@ -105,7 +108,7 @@ class Tokopedia:
 
       if pages:
           df = pd.DataFrame()
-          for halaman in range(1, pages + 1):
+          for halaman in stqdm(range(1, pages + 1)):
               temp = getShopProduct(halaman)
               df = pd.concat([df, temp], ignore_index=True)
       
