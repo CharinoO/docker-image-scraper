@@ -98,7 +98,7 @@ if authentication_status:
                     total_page = ''
                     for key in keyword:
                         print("PASS Through")
-                        # info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
+                        info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
                         print("PASS Through - 2")
                         total_page = total_page + '%s : %s\n'%(key, info)
                 pages = st.text_input('Max pages to be crawled', placeholder='Number only')
