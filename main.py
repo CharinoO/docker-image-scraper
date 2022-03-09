@@ -143,7 +143,7 @@ if authentication_status:
                 if keyword:
                     total_page = ''
                     for key in keyword:
-                        info = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
+                        # info = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
                         total_page = total_page + '%s : %s\n'%(key, info)
                 pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                 start_crawl = st.button('Scrape Website')
