@@ -3,6 +3,7 @@ import json
 import requests as req
 import pandas as pd
 from stqdm import stqdm
+import streamlit as st
 
 class Tokopedia:
     
@@ -26,9 +27,9 @@ class Tokopedia:
     def get_keys_products(self, sort_val, pages, info=False):
 
         
-      print("mini pass Through - 1")
+      st.warning("Pass 1 - 2")
       request_products = json.loads(req.post(self.ENDPOINT, json = self.PAYLOAD).content)
-      print("mini pass Through - 2")
+      st.warning("Pass 1 - 3")
 
       totalProducts = request_products['data']['ace_search_product_v4']['header']['totalDataText']
 
