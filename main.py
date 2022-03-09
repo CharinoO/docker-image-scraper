@@ -87,6 +87,8 @@ if authentication_status:
             if option2 == 'Keyword':
 
                 keyword = st.text_area('Input Keyword(s)', placeholder='Seperate word by new line')
+                if not keyword:
+                    st.stop()
                 keyword = keyword.split('\n')
                 keyword = [x for x in keyword if x != '']
                 filter_by = st.selectbox('Filter By : ', ['Paling Sesuai', 'Ulasan', 'Terbaru', 'Harga Tertinggi', 'Harga Terendah'])
@@ -143,7 +145,7 @@ if authentication_status:
                 if keyword:
                     total_page = ''
                     for key in keyword:
-                        # info = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
+                        info = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
                         total_page = total_page + '%s : %s\n'%(key, info)
                 pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                 start_crawl = st.button('Scrape Website')
