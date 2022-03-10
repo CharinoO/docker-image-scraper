@@ -28,7 +28,7 @@ class Tokopedia:
 
         
       st.warning("Pass 1 - 2")
-      request_products = json.loads(req.post(self.ENDPOINT, json = self.PAYLOAD).content)
+      request_products = json.loads(req.post(self.ENDPOINT, json = self.PAYLOAD, timeout=5).content)
       st.warning("Pass 1 - 3")
 
       totalProducts = request_products['data']['ace_search_product_v4']['header']['totalDataText']

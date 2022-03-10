@@ -1,9 +1,10 @@
 version: '3'
 services:
   streamlit:
-    build: ./
+    build:
+      dockerfile: ./Dockerfile
     ports:
-      - '8501:8501'
+      - '8051:8051'
     volumes:
       - './ebs/scrapper-data/Data-Tokopedia:/app/Data-Tokopedia:rw'
       - './ebs/scrapper-data/Data-Shopee:/app/Data-Shopee:rw'

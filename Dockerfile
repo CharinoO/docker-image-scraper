@@ -1,8 +1,9 @@
-FROM python:3.10
+FROM python:3.10.2-slim-buster
 
 COPY ./requirements.txt /app/requirements.txt
 
-RUN pip install -r app/requirements.txt
+
+RUN pip3 install -r app/requirements.txt
 
 ############################
 
@@ -10,6 +11,6 @@ WORKDIR /app
 
 COPY ./ /app/
 
-EXPOSE 8501 
+EXPOSE 8051
 
-CMD [ "streamlit", "run" , "main.py"]
+CMD [ "streamlit", "run" , "main.py", "--server.headless=true"]
