@@ -1,5 +1,5 @@
 .gitignore
 Pipfile
-Pipfile.
+Pipfile.lock
 Data-Shopee/
 Data-Tokopedia/
