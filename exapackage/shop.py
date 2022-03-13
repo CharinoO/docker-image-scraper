@@ -85,12 +85,12 @@ class Tokopedia:
 
             }
           
-          all_products.append(products, ignore_index=True)
+          all_products.append(products)
         # print(len(request_products['data']['GetShopProduct']['data']))
         # print(json.dumps(request_products['data']['GetShopProduct']['data'],  indent=4))
         # print(len(request_products['data']['GetShopProduct']['data']))
         # print(json.dumps(request_products, indent=4))
-        return pd.DataFrame(all_products)
+        return pd.DataFrame(all_products).reset_index(drop=True)
       
       if page:
           df = pd.DataFrame()

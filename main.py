@@ -59,7 +59,17 @@ def main():
                 st.write('***Result**' , df)
 
                 data = df.to_csv().encode('utf-8')
-                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+                col_sh1, col_sh2, col_sh3 = st.columns(3)
+                with col_sh1:
+                    st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+                with col_sh2:
+                    st.write('')
+                with col_sh3:
+                    delete_button = st.button("Delete this file")
+                    if delete_button:
+                        os.remove("Data-tokopedia/" + res)
+                        st.warning("Data deleted")
+                        time.sleep(1)
 		
             else:
                 st.warning("No datasets found")
@@ -106,15 +116,9 @@ def main():
                     if keyword:
                         total_page = ''
                         for key in keyword:
-<<<<<<< Updated upstream
                             
                             info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
                             
-=======
-                            # st.warning("Pass 1")
-                            info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
-                            # st.warning("Pass 2")
->>>>>>> Stashed changes
                             total_page = total_page + '%s : %s\n'%(key, info)
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                     start_crawl = st.button('Scrape Website')

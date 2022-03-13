@@ -125,10 +125,10 @@ def store_search(store_url_link, keyword, max_page, sort_by_val, info=False):
                     'liked_count' : item['item_basic']['liked_count'],
                     'detail_url': 'https://shopee.co.id/' + (item['item_basic']['name']).replace(' ', '-') + '-i.'+str(item['item_basic']['shopid']) + '.' + str(item['item_basic']['itemid'])
                     }
-                    product_list.append(product, ignore_index=True)
+                    product_list.append(product)
             df_item_list = pd.DataFrame.from_records(product_list)
             # df_item_list.to_csv('shopee_' + store_username_input + '_product - {}.csv'.format(keyword))
-            return df_item_list
+            return df_item_list.reset_index(drop=True)
         else:
             print('search result not found')
     except Exception as e:

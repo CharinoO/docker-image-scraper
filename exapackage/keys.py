@@ -99,9 +99,9 @@ class Tokopedia:
 
             }
           
-          all_prods.append(data, ignore_index=True)
+          all_prods.append(data)
         
-        return pd.DataFrame(all_prods)
+        return pd.DataFrame(all_prods).reset_index(drop=True)
       
 
       if pages:
