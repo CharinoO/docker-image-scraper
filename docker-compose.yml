@@ -3,8 +3,9 @@ services:
   streamlit:
     build:
       dockerfile: ./Dockerfile
+      context: ./
     ports:
-      - '8051:8051'
+      - '8501:8501'
     volumes:
-      - './ebs/scrapper-data/Data-Tokopedia:/app/Data-Tokopedia:rw'
-      - './ebs/scrapper-data/Data-Shopee:/app/Data-Shopee:rw'
+      - '../../Data-Tokopedia:/app/Data-Tokopedia:rw'
+      - '../../Data-Shopee:/app/Data-Shopee:rw'

@@ -27,9 +27,9 @@ class Tokopedia:
     def get_keys_products(self, sort_val, pages, info=False):
 
         
-      st.warning("Pass 1 - 2")
+      
       request_products = json.loads(req.post(self.ENDPOINT, json = self.PAYLOAD, timeout=5).content)
-      st.warning("Pass 1 - 3")
+      
 
       totalProducts = request_products['data']['ace_search_product_v4']['header']['totalDataText']
 
@@ -68,10 +68,8 @@ class Tokopedia:
           discPercent = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['discountPercentage']
           try:
             sold = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['labelGroups'][-1]['title']
-            if sold == 'Cashback':
-              sold = NaN
-            elif ~sold.contains('Terjual'):
-              sold = NaN
+            if 'Terjual' not in sold:
+		sold = NaN
           except:
             sold = NaN
           original_price = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['originalPrice']
@@ -102,7 +100,7 @@ class Tokopedia:
 
             }
           
-          all_prods.append(data)
+          all_prods.append(data, ignore_index=True)
         
         return pd.DataFrame(all_prods)
       

@@ -108,7 +108,7 @@ class Shopee:
                         'liked_count' : item['item_basic']['liked_count'],
                         'detail_url': 'https://shopee.co.id/' + (item['item_basic']['name']).replace(' ', '-') + '-i.'+str(item['item_basic']['shopid']) + '.' + str(item['item_basic']['itemid'])
                         }
-                        product_list.append(product)
+                        product_list.append(product, ignore_index=True)
                 df_item_list = pd.DataFrame.from_records(product_list)
                 
                 return df_item_list

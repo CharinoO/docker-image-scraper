@@ -85,7 +85,7 @@ class Tokopedia:
 
             }
           
-          all_products.append(products)
+          all_products.append(products, ignore_index=True)
         # print(len(request_products['data']['GetShopProduct']['data']))
         # print(json.dumps(request_products['data']['GetShopProduct']['data'],  indent=4))
         # print(len(request_products['data']['GetShopProduct']['data']))

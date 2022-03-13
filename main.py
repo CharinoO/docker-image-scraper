@@ -59,6 +59,7 @@ def main():
 
                 data = df.to_csv().encode('utf-8')
                 st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+		
             else:
                 st.warning("No datasets found")
         else:
@@ -70,7 +71,18 @@ def main():
                 st.write('***Result**' , df)
 
                 data = df.to_csv().encode('utf-8')
-                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+		col_sh1, col_sh2, col_sh3 = st.columns(3)
+		with col_sh1:
+
+	                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+		with col_sh2:
+			st.write('')
+		with col_sh3:
+			delete_button = st.button("Delete this file")
+			if delete_button:
+				os.remove("Data-Shopee/" + res)
+				st.warning("Data deleted")
+				time.sleep(1)
             else:
                 st.warning("No datasets found")
 
@@ -94,9 +106,9 @@ def main():
                     if keyword:
                         total_page = ''
                         for key in keyword:
-                            st.warning("Pass 1")
+                            
                             info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
-                            st.warning("Pass 2")
+                            
                             total_page = total_page + '%s : %s\n'%(key, info)
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                     start_crawl = st.button('Scrape Website')
@@ -176,7 +188,7 @@ def main():
         with col2:
             image = Image.open('logo/images.png')
 
-            st.image(image, caption='EXA x MERCH')
+            st.image(image)
 
         with col3:
             st.write(' ')
@@ -212,7 +224,7 @@ def main():
                         temp.to_excel('Data-Tokopedia//%s - Tokopedia - %s.xlsx' %(current_time, key), index=False)
                 else:
                     for key in keyword:
-                        print('PASSSS')
+                        
                         temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
                         temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
 

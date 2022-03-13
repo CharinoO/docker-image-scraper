@@ -11,6 +11,8 @@ WORKDIR /app
 
 COPY ./ /app/
 
-EXPOSE 8051
+RUN mkdir Data-Tokopedia Data-Shopee
+
+EXPOSE 8501
 
 CMD [ "streamlit", "run" , "main.py", "--server.headless=true"]
