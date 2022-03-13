@@ -106,9 +106,15 @@ def main():
                     if keyword:
                         total_page = ''
                         for key in keyword:
+<<<<<<< Updated upstream
                             
                             info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
                             
+=======
+                            # st.warning("Pass 1")
+                            info = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=1, info=True)
+                            # st.warning("Pass 2")
+>>>>>>> Stashed changes
                             total_page = total_page + '%s : %s\n'%(key, info)
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                     start_crawl = st.button('Scrape Website')
@@ -255,13 +261,18 @@ def main():
 
                     try :
                         if st.session_state.page_awal:
-                            isSuccess = True
-                            df = Tokopedia(Search=shopLink).get_shop_products(page=int(st.session_state.page_awal), sort=sort_by(filter_by))
-                            df.to_excel('Data-Tokopedia//%s - Tokopedia.xlsx' %(current_time), index=False)
-                        else:
+                            now = datetime.now()
+                            current_time = now.strftime("%Y-%m-%d-%H-%M")
+                            print("YOOOOOOO")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                            df.to_excel('Data-Tokopedia//%s -  Tokopedia.xlsx' %(current_time), index=False)
+                            df.to_excel('Data-Tokopedia/%s - Tokopedia.xlsx' %(current_time), index=False)
+                        else:
+                            now = datetime.now()
+                            current_time = now.strftime("%Y-%m-%d-%H-%M")
+                            isSuccess = True
+                            df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
+                            df.to_excel('Data-Tokopedia/%s -  Tokopedia.xlsx' %(current_time), index=False)
                     except:
                         st.error('Please input Shop link address')
                         isSuccess = False

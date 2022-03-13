@@ -11,7 +11,6 @@ WORKDIR /app
 
 COPY ./ /app/
 
-RUN mkdir Data-Tokopedia Data-Shopee
 
 EXPOSE 8501
 
