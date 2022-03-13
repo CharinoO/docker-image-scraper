@@ -7,6 +7,7 @@ from exapackage.shopee_global import Shopee
 from exapackage.shopee_store_item import store_search
 from exapackage.shopee_store_item_all import store_all_search
 import os
+import time
 from datetime import datetime
 import pandas as pd
 import streamlit_authenticator as stauth
@@ -71,18 +72,17 @@ def main():
                 st.write('***Result**' , df)
 
                 data = df.to_csv().encode('utf-8')
-		col_sh1, col_sh2, col_sh3 = st.columns(3)
-		with col_sh1:
-
-	                st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
-		with col_sh2:
-			st.write('')
-		with col_sh3:
-			delete_button = st.button("Delete this file")
-			if delete_button:
-				os.remove("Data-Shopee/" + res)
-				st.warning("Data deleted")
-				time.sleep(1)
+                col_sh1, col_sh2, col_sh3 = st.columns(3)
+                with col_sh1:
+                    st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
+                with col_sh2:
+                    st.write('')
+                with col_sh3:
+                    delete_button = st.button("Delete this file")
+                    if delete_button:
+                        os.remove("Data-Shopee/" + res)
+                        st.warning("Data deleted")
+                        time.sleep(1)
             else:
                 st.warning("No datasets found")
 

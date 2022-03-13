@@ -69,7 +69,7 @@ class Tokopedia:
           try:
             sold = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['labelGroups'][-1]['title']
             if 'Terjual' not in sold:
-		sold = NaN
+              sold = NaN
           except:
             sold = NaN
           original_price = respon['data']['ace_search_product_v4']['data']['products'][idx_prod]['originalPrice']
