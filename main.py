@@ -14,6 +14,7 @@ import streamlit_authenticator as stauth
 
 
 def main():
+    st.set_page_config(page_title="Spider Scraper", layout='wide')
     names            = ['team merch','team exa']
     usernames        = ['merch','exa']
     hashed_passwords = ["$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
@@ -22,15 +23,17 @@ def main():
 
     authenticator = stauth.authenticate(names,usernames,hashed_passwords,
         cookie_name, "some_signature_name",cookie_expiry_days=1)
-
-    st.set_page_config(page_title="Spider Scraper", layout='wide')
-
-    name, authentication_status = authenticator.login('Login','main')
-
-    if authentication_status == None:
-        st.warning("Input Username and Email")
-    elif authentication_status == False:
-        st.warning("Wrong Username or Email")
+    log_1, log_2, log_3 = st.columns(3)
+    with log_1:
+        st.write('')
+    with log_2:
+        name, authentication_status = authenticator.login('Login','main')
+        if authentication_status == None:
+            st.warning("Input Username and Email")
+        elif authentication_status == False:
+            st.warning("Wrong Username or Email")
+    with log_3:
+        st.write('')
 
 
     def update_pages():
@@ -67,7 +70,7 @@ def main():
                 with col_sh3:
                     delete_button = st.button("Delete this file")
                     if delete_button:
-                        os.remove("Data-tokopedia/" + res)
+                        os.remove("Data-Tokopedia/" + res)
                         st.warning("Data deleted")
                         time.sleep(1)
 		
