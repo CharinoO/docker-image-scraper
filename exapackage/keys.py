@@ -106,7 +106,7 @@ class Tokopedia:
 
       if pages:
           df = pd.DataFrame()
-          for halaman in stqdm(range(1, pages + 1)):
+          for halaman in range(1, pages + 1):
               temp = getShopProduct(halaman)
               df = pd.concat([df, temp], ignore_index=True)
       
