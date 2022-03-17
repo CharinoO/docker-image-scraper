@@ -57,8 +57,11 @@ def store_all_search(store_url_link, max_page, sort_by_val, info=False):
         if(json_data['total_count'] > 0):
             total_data = json_data['total_count']
             page_count = int(math.ceil(int(json_data['total_count']) / limit_item_page))
+            if info:
+                return page_count
             if(page_count > 5):
                 page_count = 5
+            print("PASSSSSS")
             print('total page: ' + str(page_count))
             #MELAKUKAN PENARIKAN DATA PER PAGE DI LOOPING
             product_list = []

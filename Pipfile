@@ -4,15 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+numpy = "*"
 pandas = "*"
 streamlit = "*"
 scrapy-playwright = "*"
 streamlit-authenticator = "*"
 openpyxl = "*"
 stqdm = "*"
-urllib3 = "*"
-requests = "*"
-free-proxy = "*"
 
 [dev-packages]
 

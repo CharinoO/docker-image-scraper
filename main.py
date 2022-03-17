@@ -12,32 +12,50 @@ from datetime import datetime
 import pandas as pd
 import streamlit_authenticator as stauth
 
-
 def main():
-    st.set_page_config(page_title="Spider Scraper", layout='wide')
-    names            = ['team merch','team exa']
-    usernames        = ['merch','exa']
-    hashed_passwords = ["$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
-                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK"]
-    cookie_name      = "EXAMERCH_cookies_and_cream"
-
-    authenticator = stauth.authenticate(names,usernames,hashed_passwords,
-        cookie_name, "some_signature_name",cookie_expiry_days=1)
-    log_1, log_2, log_3 = st.columns(3)
-    with log_1:
-        st.write('')
-    with log_2:
-        name, authentication_status = authenticator.login('Login','main')
-        if authentication_status == None:
-            st.warning("Input Username and Email")
-        elif authentication_status == False:
-            st.warning("Wrong Username or Email")
-    with log_3:
-        st.write('')
-
-
     def update_pages():
+        """
+        ini docsting tentang function ini
+        output apa 
+        input apa
+        """
         st.session_state.page_awal = st.session_state.page
+    
+    # def price_to_int(s):
+    #     if 'Rp' in s:
+    #         return int(s.replace('Rp', '').replace('.', ''))
+
+    #     return int(0)
+
+    def qty_to_int(s):
+        if type(s) == str:
+            s_split = s.split()
+
+            if len(s_split) > 1:
+                if s_split[-1] == 'rb':
+                    return int(s_split[1].replace(',', '')) * 100 if ',' in s_split[1] else int(s_split[1]) * 1000
+                else:
+                    return int(s_split[1])
+        # if NaN
+        return int(0)
+
+    def process_data(df) -> pd.DataFrame:
+        """
+        Processing column in a dataframe.
+        output -> Dataframe
+        """
+
+        # df['Original Price'] = [price_to_int(x) for x in df['Original Price']]
+        # df['Final Price'] = [price_to_int(x) for x in df['Final Price']]
+        # df['Qty Sold'] = [qty_to_int(x) for x in df['Qty Sold']]
+        
+        # Data pada kolom 'Original Price' dan 'Final Price' semuanya berupa string
+        df['Original Price'] =  [int(x.replace('Rp', '').replace('.', '')) if 'Rp' in x else int(0) for x in df['Original Price']]
+        df['Final Price'] =  [int(x.replace('Rp', '').replace('.', '')) if 'Rp' in x else int(0) for x in df['Final Price']]
+        df['Qty Sold'] = [qty_to_int(x) for x in df['Qty Sold']]
+
+        return df
+
 
     def sort_by(name):
         val = {'Paling Sesuai':23, 'Terbaru':2, 'Harga Tertinggi':10,
@@ -58,9 +76,10 @@ def main():
             folder.sort(reverse=True)
             if folder:
                 res = st.selectbox('Dataset', folder)
-                df  =  pd.read_excel('Data-Tokopedia/'+ res)
+                df  =  pd.read_csv('Data-Tokopedia/'+ res, sep=';')
                 st.write('***Result**' , df)
 
+             
                 data = df.to_csv().encode('utf-8')
                 col_sh1, col_sh2, col_sh3 = st.columns(3)
                 with col_sh1:
@@ -81,7 +100,7 @@ def main():
             folder.sort(reverse=True)
             if folder:
                 res = st.selectbox('Dataset', folder)
-                df  =  pd.read_excel('Data-Shopee/'+ res)
+                df  =  pd.read_csv('Data-Shopee/'+ res, sep=';')
                 st.write('***Result**' , df)
 
                 data = df.to_csv().encode('utf-8')
@@ -98,6 +117,30 @@ def main():
                         time.sleep(1)
             else:
                 st.warning("No datasets found")
+    
+    st.set_page_config(page_title="Spider Scraper", layout='wide')
+    names            = ['team merch','team exa']
+    usernames        = ['merch','exa']
+    hashed_passwords = ["$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
+                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK"]
+    cookie_name      = "EXAMERCH_cookies_and_cream"
+    try :
+            
+        authenticator = stauth.authenticate(names,usernames,hashed_passwords,
+            cookie_name, "some_signature_name",cookie_expiry_days=1)
+        log_1, log_2, log_3 = st.columns(3)
+        with log_1:
+            st.write('')
+        with log_2:
+            name, authentication_status = authenticator.login('Login','main')
+            if authentication_status == None:
+                st.warning("Input Username and Email")
+            elif authentication_status == False:
+                st.warning("Wrong Username or Email")
+        with log_3:
+            st.write('')
+    except ValueError:
+        st.warning("Click Login again")
 
     if authentication_status:
         
@@ -151,7 +194,7 @@ def main():
                             filter_by = '2'
                             print('side 2 : ', filter_by)
                     start_scraping = st.button('Scrape Website')
-                    st.markdown("<h4 style='text-align: center; color: red;'> Please notes that scraping with shop address will get single page by default </h4>", unsafe_allow_html=True)
+                    st.markdown("<h4 style='text-align: center; color: red;'> Please notes that scraping with shop address will get single page by default (80 Products) </h4>", unsafe_allow_html=True)
             # =====================================================================================================================================
             # =====================================================================================================================================
             # =====================================================================================================================================
@@ -185,14 +228,19 @@ def main():
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only', key='page_awal')
                     filter_by = st.selectbox('Filter By : ', ['Terkait', 'Terbaru', 'Terlaris', 'Termurah', 'Sales', 'Termahal'])
                     
-                    shopInfo = st.button('Show Shop Information')
-                    
-                    # if shopLink:
-                        # name, loc, prCount, prSold, tx = Tokopedia(Search=shopLink).get_shop_products(info=True)
-                        # st.text_input('Possible pages to be crawled', placeholder='Max : {}'.format(ceil(int(prCount) / 80)), key='page', on_change=update_pages)
+                    shopInfo = False
+
+                    if shopLink:
+                        total_data  = store_all_search(shopLink, 1, filter_by, info=True)
+                        st.markdown(f"""
+                                ```
+                                total page : {total_data}
+                                """)
+                    #     name, loc, prCount, prSold, tx = Tokopedia(Search=shopLink).get_shop_products(info=True)
+                    #     st.text_input('Possible pages to be crawled', placeholder='Max : {}'.format(ceil(int(prCount) / 80)), key='page', on_change=update_pages)
                         
                     start_scraping = st.button('Scrape Website')
-                    st.markdown("<h4 style='text-align: center; color: red;'> Please notes that scraping with shop address will get single page by default </h4>", unsafe_allow_html=True)
+                    st.markdown("<h4 style='text-align: center; color: red;'> Please notes that scraping with shop address will get single page by default (30 products) </h4>", unsafe_allow_html=True)
 
 
         col1, col2, col3 = st.columns(3)
@@ -234,12 +282,14 @@ def main():
                 if option == 'Tokopedia':
                     for key in keyword:
                         temp = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=int(pages))
-                        temp.to_excel('Data-Tokopedia//%s - Tokopedia - %s.xlsx' %(current_time, key), index=False)
+                        temp = process_data(temp)
+                        temp.to_csv('Data-Tokopedia/%s - Tokopedia - %s.csv' %(current_time, key), index=False, sep=';')
                 else:
                     for key in keyword:
                         
                         temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
-                        temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
+                        temp = process_data(temp)
+                        temp.to_csv('Data-Shopee/%s - Shopee - %s.csv' %(current_time, key), index=False)
 
             with st.container():
                 show_dataset()
@@ -273,13 +323,13 @@ def main():
                             print("YOOOOOOO")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                            df.to_excel('Data-Tokopedia/%s - Tokopedia.xlsx' %(current_time), index=False)
+                            df.to_csv('Data-Tokopedia/%s - Tokopedia.csv' %(current_time), index=False)
                         else:
                             now = datetime.now()
                             current_time = now.strftime("%Y-%m-%d-%H-%M")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                            df.to_excel('Data-Tokopedia/%s -  Tokopedia.xlsx' %(current_time), index=False)
+                            df.to_csv('Data-Tokopedia/%s -  Tokopedia.csv' %(current_time), index=False)
                     except:
                         st.error('Please input Shop link address')
                         isSuccess = False
@@ -290,12 +340,12 @@ def main():
                         for key in keyword:
 
                             temp = store_search(shopLink, key, int(pages), filter_by)
-                            temp.to_excel('Data-Shopee/%s - Shopee - %s.xlsx' %(current_time, key), index=False)
+                            temp.to_csv('Data-Shopee/%s - Shopee - %s.csv' %(current_time, key), index=False)
                     else:
                         now = datetime.now()
                         current_time = now.strftime("%Y-%m-%d-%H-%M")
                         df = store_all_search(shopLink, int(pages), filter_by)
-                        df.to_excel('Data-Shopee/%s - Shopee.xlsx' %(current_time), index=False)
+                        df.to_csv('Data-Shopee/%s - Shopee.csv' %(current_time), index=False)
 
                     
                 # with st.expander('Result Details'):
