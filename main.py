@@ -351,7 +351,7 @@ def main():
                 with st.container():
                     show_dataset()
     except ValueError:
-        st.warning("Click Login again")
+        pass
 
 if __name__ == '__main__':
     main()
