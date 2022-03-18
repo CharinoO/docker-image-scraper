@@ -350,8 +350,8 @@ def main():
 
                 with st.container():
                     show_dataset()
-    except ValueError:
-        pass
+    except BaseException:
+        raise BaseException
 
 if __name__ == '__main__':
     main()
