@@ -142,7 +142,7 @@ def main():
                     keyword = st.text_area('Input Keyword(s)', placeholder='Seperate word by new line')
                     keyword = keyword.split('\n')
                     keyword = [x for x in keyword if x != '']
-                    filter_by = st.selectbox('Filter By : ', ['Paling Sesuai', 'Ulasan', 'Terbaru', 'Harga Tertinggi', 'Harga Terendah'])
+                    filter_by = st.selectbox('Sort By : ', ['Paling Sesuai', 'Ulasan', 'Terbaru', 'Harga Tertinggi', 'Harga Terendah'])
                     info = 0
                     total_page = ''
                     if keyword:
@@ -163,7 +163,7 @@ def main():
                 else:
                     shopLink = st.text_input('Shop link address', placeholder='URL')
                     st.text_input('Max pages to be crawled', placeholder='Number only', key='page_awal')
-                    filter_by = st.selectbox('Filter By : ', ['Paling Sesuai', 'Terbaru', 'Harga Tertinggi',
+                    filter_by = st.selectbox('Sort By : ', ['Paling Sesuai', 'Terbaru', 'Harga Tertinggi',
                         'Harga Terendah', 'Ulasan Terbanyak', 'Pembelian Terbanyak',
                         'Dilihat Terbanyak', 'Pembaruan Terakhir'])
                     
@@ -190,7 +190,7 @@ def main():
                     keyword = st.text_area('Input Keyword(s)', placeholder='Seperate word by new line')
                     keyword = keyword.split('\n')
                     keyword = [x for x in keyword if x != '']
-                    filter_by = st.selectbox('Filter By : ', ['Terkait', 'Terbaru', 'Terlaris', 'Termurah', 'Sales', 'Termahal'])
+                    filter_by = st.selectbox('Sort By : ', ['Terkait', 'Terbaru', 'Terlaris', 'Termurah', 'Sales', 'Termahal'])
                     info = 0
                     total_page = ''
                     if keyword:
@@ -212,7 +212,7 @@ def main():
                     keyword = keyword.split('\n')
                     keyword = [x for x in keyword if x != '']
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only', key='page_awal')
-                    filter_by = st.selectbox('Filter By : ', ['Terkait', 'Terbaru', 'Terlaris', 'Termurah', 'Sales', 'Termahal'])
+                    filter_by = st.selectbox('Sort By : ', ['Terkait', 'Terbaru', 'Terlaris', 'Termurah', 'Sales', 'Termahal'])
                     
                     shopInfo = False
 
