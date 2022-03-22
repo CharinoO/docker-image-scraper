@@ -345,13 +345,13 @@ def main():
                             print("YOOOOOOO")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                            df.to_csv('Data-Tokopedia/%s - Tokopedia.csv' %(current_time), index=False, sep=';')
+                            df.to_csv('Data-Tokopedia/%s - Tokopedia-%s.csv' %(current_time,  shopLink.split('/')[-1]), index=False, sep=';')
                         else:
                             now = datetime.now()
                             current_time = now.strftime("%d %B, %Y at %I_%M %p")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
-                            df.to_csv('Data-Tokopedia/%s -  Tokopedia.csv' %(current_time), index=False, sep=';')
+                            df.to_csv('Data-Tokopedia/%s -  Tokopedia-%s.csv' %(current_time, shopLink.split('/')[-1]), index=False, sep=';')
                     except:
                         st.error('Please input Shop link address')
                         isSuccess = False
@@ -368,7 +368,7 @@ def main():
                         now = datetime.now()
                         current_time = now.strftime("%d %B, %Y at %I_%M %p")
                         df = store_all_search(shopLink, int(pages), filter_by)
-                        df.to_csv('Data-Shopee/%s - Shopee.csv' %(current_time), index=False, sep=';')
+                        df.to_csv('Data-Shopee/%s - Shopee-%s.csv' %(current_time,  shopLink.split('/')[-1]), index=False, sep=';')
 
                     
                 # with st.expander('Result Details'):
