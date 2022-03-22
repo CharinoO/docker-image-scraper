@@ -56,7 +56,7 @@ class Shopee:
                 print('total page: ' + str(page_count))
                 #MELAKUKAN PENARIKAN DATA PER PAGE DI LOOPING
                 product_list = []
-                for i in stqdm(range (max_page)):
+                for i in stqdm(range (max_page), desc="Scraping Shopee Page"):
                     print('pulling data from page-' + str(i+1) +'...')
                     params = (
                         ('by', 'relevancy'),
@@ -72,7 +72,7 @@ class Shopee:
                     json_data = json.loads(response.text)
                     item_list = json_data['items']
                     #CONSTRUCT ROW DATA
-                    for item in item_list:
+                    for item in stqdm(item_list, desc="Loading data.."):
                         #GET DATA STORE
                         params_get_store = {
                             'shopid': item['item_basic']['shopid']

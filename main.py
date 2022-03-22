@@ -1,4 +1,5 @@
 from math import ceil
+from numpy import NaN
 import streamlit as st
 from PIL import Image
 from exapackage.shop import Tokopedia
@@ -11,15 +12,38 @@ import time
 from datetime import datetime
 import pandas as pd
 import streamlit_authenticator as stauth
+import numpy as np
 
 def main():
     def update_pages():
         """
-        ini docsting tentang function ini
-        output apa 
-        input apa
+        update state initial text box from max page
         """
         st.session_state.page_awal = st.session_state.page
+
+    def update_data_source():
+        """
+        update state initial data source from target website
+        """
+        st.session_state.data_folder = st.session_state.source
+    
+    def condition_shopee_seller(df):
+        #create a list of our conditions
+        data = df.copy()
+        conditions = [
+            (data['is_official_shop'] == True),
+            (data['is_preferred_plus_seller'] == True) & (data['is_shopee_verified'] == True),
+            (data['is_shopee_verified'] == True),
+            (data['is_preferred_plus_seller'] == False ) & (data['is_shopee_verified'] == False) & (data['is_official_shop'] == False)
+            ]
+
+        # create a list of the values we want to assign for each condition
+        values = ['Mall', 'Star plus seller', 'star seller', NaN]
+
+        # create a new column and use np.select to assign values to it using our lists as arguments
+        data['tier'] = np.select(conditions, values)
+        return data
+
 
     def qty_to_int(s):
         if type(s) == str:
@@ -59,17 +83,20 @@ def main():
         return val[name]
 
     def show_dataset():
-        src = st.selectbox('Data Source', ['Tokopedia', 'Shopee'])
+        src = st.selectbox('Data Source', ['Tokopedia', 'Shopee'], key='data_folder')
         if src == 'Tokopedia':
             folder = os.listdir('Data-Tokopedia/')
             folder.sort(reverse=True)
             if folder:
                 res = st.selectbox('Dataset', folder)
                 df  =  pd.read_csv('Data-Tokopedia/'+ res, sep=';')
-                st.write('***Result**' , df)
+                badge = st.multiselect("Filter by Store Badge : ", default= df['Badge'].unique(), options=df['Badge'].unique())
+                st.write('***Result**')
+                df_final = df.query("Badge == @badge")
+                st.dataframe(df_final)
 
 
-                data = df.to_csv().encode('utf-8')
+                data = df_final.to_csv(sep=';').encode('utf-8')
                 col_sh1, col_sh2, col_sh3 = st.columns(3)
                 with col_sh1:
                     st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
@@ -80,7 +107,7 @@ def main():
                     if delete_button:
                         os.remove("Data-Tokopedia/" + res)
                         st.warning("Data deleted")
-                        time.sleep(1)
+                        st.experimental_rerun()
 		
             else:
                 st.warning("No datasets found")
@@ -90,9 +117,18 @@ def main():
             if folder:
                 res = st.selectbox('Dataset', folder)
                 df  =  pd.read_csv('Data-Shopee/'+ res, sep=';')
-                st.write('***Result**' , df)
+                df  = condition_shopee_seller(df)
+                cols = df.columns[(df.columns != 'is_official_shop') & (df.columns != 'is_preferred_plus_seller') & (df.columns != 'is_shopee_verified')]
+                cols = list(cols)
+                cols.remove('tier')
+                cols.insert(1, 'tier')
+                df  = df[cols]
+                badge_shopee = st.multiselect("Filter by Store Badge : ", default= df['tier'].unique(), options=df['tier'].unique())
+                st.write('***Result**')
+                df_final_shopee = df.query("tier == @badge_shopee")
+                st.dataframe(df_final_shopee)
 
-                data = df.to_csv().encode('utf-8')
+                data = df_final_shopee.to_csv(sep=';').encode('utf-8')
                 col_sh1, col_sh2, col_sh3 = st.columns(3)
                 with col_sh1:
                     st.download_button("Download here", data=data, file_name=res, mime='text/csv', key='download-csv')
@@ -110,10 +146,10 @@ def main():
     st.set_page_config(page_title="Spider Scraper", layout='wide')
     names            = ['team merch','team exa']
     usernames        = ['merch','exa']
-    hashed_passwords = ["$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
-                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK"]
+    hashed_passwords = ("$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
+                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK")
     cookie_name      = "EXAMERCH_cookies_and_cream"
-        
+    
     authenticator = stauth.authenticate(names,usernames,hashed_passwords,
         cookie_name, "some_signature_name",cookie_expiry_days=1)
     log_1, log_2, log_3 = st.columns(3)
@@ -132,9 +168,9 @@ def main():
         
         with st.sidebar:
             
-            st.markdown("<h1 style='text-align: center;'> EXA x MERCH </h1>", unsafe_allow_html=True)
-            option = st.selectbox('Target Website', ['Tokopedia', 'Shopee'])
-            option2 = st.selectbox('Crawl by: ', ['Keyword', 'Shop Link'])
+            st.markdown("<h1 style='text-align: center;'>EXA x MERCH  </h1>", unsafe_allow_html=True)
+            option = st.selectbox('Website to crawl', ['Tokopedia', 'Shopee'], key="source", on_change=update_data_source)
+            option2 = st.selectbox('Get data by: ', ['Keyword', 'Shop Link'])
             if option == 'Tokopedia':
                     
                 if option2 == 'Keyword':
@@ -248,8 +284,9 @@ def main():
                     --------------------------------
                     
                     - [x] Version 0.5
-                    - [x] Development phase (Current)
-                    - [ ] Testing Phase
+                    - [x] Development phase
+                    - [x] Testing Phase
+                    - [x] Production V1.0
                     
                     |Website(supported) | Features |
                     | ----------- | ----------- |
@@ -264,7 +301,7 @@ def main():
         if option2 == 'Keyword':
             if start_crawl:
                 now = datetime.now()
-                current_time = now.strftime("%Y-%m-%d-%H-%M")
+                current_time = now.strftime("%d %B, %Y at %I_%M %p")
                 if option == 'Tokopedia':
                     for key in keyword:
                         temp = TokpedKeys(Search=key).get_keys_products(sort_val=res_filter(filter_by), pages=int(pages))
@@ -304,14 +341,14 @@ def main():
                     try :
                         if st.session_state.page_awal:
                             now = datetime.now()
-                            current_time = now.strftime("%Y-%m-%d-%H-%M")
+                            current_time = now.strftime("%d %B, %Y at %I_%M %p")
                             print("YOOOOOOO")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
                             df.to_csv('Data-Tokopedia/%s - Tokopedia.csv' %(current_time), index=False, sep=';')
                         else:
                             now = datetime.now()
-                            current_time = now.strftime("%Y-%m-%d-%H-%M")
+                            current_time = now.strftime("%d %B, %Y at %I_%M %p")
                             isSuccess = True
                             df = Tokopedia(Search=shopLink).get_shop_products(page=1, sort=sort_by(filter_by))
                             df.to_csv('Data-Tokopedia/%s -  Tokopedia.csv' %(current_time), index=False, sep=';')
@@ -321,14 +358,15 @@ def main():
                 else:
                     if keyword:
                         now = datetime.now()
-                        current_time = now.strftime("%Y-%m-%d-%H-%M")
+                        current_time = now.strftime("%d %B, %Y at %I_%M %p")
                         for key in keyword:
 
                             temp = store_search(shopLink, key, int(pages), filter_by)
+                            print(temp)
                             temp.to_csv('Data-Shopee/%s - Shopee - %s.csv' %(current_time, key), index=False, sep=';')
                     else:
                         now = datetime.now()
-                        current_time = now.strftime("%Y-%m-%d-%H-%M")
+                        current_time = now.strftime("%d %B, %Y at %I_%M %p")
                         df = store_all_search(shopLink, int(pages), filter_by)
                         df.to_csv('Data-Shopee/%s - Shopee.csv' %(current_time), index=False, sep=';')
 
