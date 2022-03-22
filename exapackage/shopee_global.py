@@ -71,8 +71,6 @@ class Shopee:
                 )
                 response = requests.get('https://shopee.co.id/api/v4/search/search_items', params=params)
                 json_data = json.loads(response.text)
-                print(type(json_data))
-                print(json_data)
                 item_list = json_data['items']
                 #CONSTRUCT ROW DATA
                 for item in stqdm(item_list, desc="Loading data.."):
