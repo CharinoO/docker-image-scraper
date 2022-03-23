@@ -7,6 +7,7 @@ from exapackage.keys import Tokopedia as TokpedKeys
 from exapackage.shopee_global import Shopee
 from exapackage.shopee_store_item import store_search
 from exapackage.shopee_store_item_all import store_all_search
+from exapackage.shopee_api import ShopeeKeyword
 import os
 import time
 from datetime import datetime
@@ -232,7 +233,8 @@ def main():
                     if keyword:
                         total_page = ''
                         for key in keyword:
-                            info = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
+                            # info, response = Shopee(Search=key).global_search(sort_by_key=filter_by, info=True)
+                            info, response = ShopeeKeyword().search_keywords(key, filter_by)
                             total_page = total_page + '%s : %s\n'%(key, info)
                     pages = st.text_input('Max pages to be crawled', placeholder='Number only')
                     start_crawl = st.button('Scrape Website')
@@ -310,7 +312,8 @@ def main():
                 else:
                     for key in keyword:
                         
-                        temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
+                        # temp = Shopee(Search=key).global_search(sort_by_key=filter_by, max_page=int(pages))
+                        temp = ShopeeKeyword().process_response(response, int(pages))
                         temp.to_csv('Data-Shopee/%s - Shopee - %s.csv' %(current_time, key), index=False, sep=';')
 
             with st.container():
