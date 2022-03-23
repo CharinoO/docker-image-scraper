@@ -11,8 +11,8 @@ import os
 import time
 from datetime import datetime
 import pandas as pd
-import streamlit_authenticator as stauth
 import numpy as np
+import streamlit_authenticator as stauth
 
 def main():
     def update_pages():
@@ -146,17 +146,17 @@ def main():
     st.set_page_config(page_title="Spider Scraper", layout='wide')
     names            = ['team merch','team exa']
     usernames        = ['merch','exa']
-    hashed_passwords = ("$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
-                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK")
+    hashed_passwords = ["$2b$12$HwAdj.1ql8/ftD8LSzCqReE5jWKXNK7R2AJf5p/hfvqKwctS/v1fe",
+                        "$2b$12$SgSFaxyEXOeVhUY7iJdsUe3ivc5KSQgWmtM9z98e1qhfsaPJRHmlK"]
     cookie_name      = "EXAMERCH_cookies_and_cream"
     
-    authenticator = stauth.authenticate(names,usernames,hashed_passwords,
+    authenticator = stauth.Authenticate(names,usernames,hashed_passwords,
         cookie_name, "some_signature_name",cookie_expiry_days=1)
     log_1, log_2, log_3 = st.columns(3)
     with log_1:
         st.write('')
     with log_2:
-        name, authentication_status = authenticator.login('Login','main')
+        name, authentication_status, _ = authenticator.login('Login','main')
         if authentication_status == None:
             st.warning("Input Username and Email")
         elif authentication_status == False:

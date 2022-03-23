@@ -4,6 +4,7 @@ import json
 import pandas as pd 
 import math
 from stqdm import stqdm
+import streamlit as st
 
 
 class Shopee:
@@ -43,8 +44,9 @@ class Shopee:
             ('version', '2')
         )
         response = requests.get('https://shopee.co.id/api/v4/search/search_items', params=params)
-        print(response.status_code)
-        json_data = json.loads(response.text)
+        response.raise_for_status()
+        st.warning("Status code: {}".format(response.status_code))
+        json_data = json.loads(response.content)
 
         #SET MAXIMUM TOTAL PAGE CRAWL
         if(json_data['total_count'] > 0):

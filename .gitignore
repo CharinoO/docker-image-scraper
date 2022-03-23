@@ -1,4 +1,5 @@
 .gitignore
+.streamlit/
 Pipfile
 Pipfile.lock
 Data-Shopee/

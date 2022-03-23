@@ -7,10 +7,10 @@ name = "pypi"
 numpy = "*"
 pandas = "*"
 streamlit = "*"
-scrapy-playwright = "*"
 streamlit-authenticator = "*"
 openpyxl = "*"
 stqdm = "*"
+requests = "*"
 
 [dev-packages]
 
