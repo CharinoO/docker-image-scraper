@@ -40,8 +40,9 @@ class ShopeeKeyword:
         response.raise_for_status()
         headers = response.headers["content-type"].strip().startswith("application/json")
         if (response.status_code != 204 and headers):
+            response = json.load(response.json()) 
             total_page = int(math.ceil(int(response['total_count']) / limit_item_page))
-            return json.load(response.json()) , total_page
+            return response, total_page
         
     def process_response(self, response: dict, max_page: int):
 
