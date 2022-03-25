@@ -35,12 +35,7 @@ def store_search(store_url_link, keyword, max_page, sort_by_val, info=False):
     target_shop_id = json_data_store_detail['data']['shopid']
 
     #NORMAL SHOPEE SEARCH FLOW                
-    # print('Input search keyword: ')
-    # keyword = input()
-    # print(keyword)
-    # print('Input search sort by: ')
-    # sort_by_val = input()
-    # print(sort_by_val)
+
     sort_by_key = search_sort_by(sort_by_val)
     limit_item_page = 60
 
@@ -88,14 +83,16 @@ def store_search(store_url_link, keyword, max_page, sort_by_val, info=False):
                 response = requests.get('https://shopee.co.id/api/v4/search/search_items', params=params)
                 json_data = json.loads(response.text)
                 item_list = json_data['items']
+
+                params_get_store = {
+                    'shopid': item[0]['item_basic']['shopid']
+                }
+                response_store = requests.get('https://shopee.co.id/api/v4/product/get_shop_info', params = params_get_store)
+                json_data_store = json.loads(response_store.text)
                 #CONSTRUCT ROW DATA
                 for item in item_list:
                     #GET DATA STORE
-                    params_get_store = {
-                        'shopid': item['item_basic']['shopid']
-                    }
-                    response_store = requests.get('https://shopee.co.id/api/v4/product/get_shop_info', params = params_get_store)
-                    json_data_store = json.loads(response_store.text)
+                    
                     params_get_item_detail = (
                         ('itemid', item['item_basic']['itemid']),
                         ('shopid', item['item_basic']['shopid'])
@@ -127,7 +124,7 @@ def store_search(store_url_link, keyword, max_page, sort_by_val, info=False):
                     }
                     product_list.append(product)
             df_item_list = pd.DataFrame.from_records(product_list)
-            # df_item_list.to_csv('shopee_' + store_username_input + '_product - {}.csv'.format(keyword))
+
             return df_item_list.reset_index(drop=True)
         else:
             print('search result not found')

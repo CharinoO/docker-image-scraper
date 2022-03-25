@@ -33,7 +33,6 @@ def store_all_search(store_url_link, max_page, sort_by_val, info=False):
 
 
     sort_by_key = search_sort_by(sort_by_val)
-    limit_item_page = 60
 
     limit_item_page = 30
     
@@ -81,14 +80,16 @@ def store_all_search(store_url_link, max_page, sort_by_val, info=False):
                 response = requests.get('https://shopee.co.id/api/v4/search/search_items', params=params)
                 json_data = json.loads(response.text)
                 item_list = json_data['items']
+
+                params_get_store = {
+                        'shopid': item_list[0]['item_basic']['shopid']
+                    }
+                response_store = requests.get('https://shopee.co.id/api/v4/product/get_shop_info', params = params_get_store)
+                json_data_store = json.loads(response_store.text)
                 #CONSTRUCT ROW DATA
                 for item in item_list:
                     #GET DATA STORE
-                    params_get_store = {
-                        'shopid': item['item_basic']['shopid']
-                    }
-                    response_store = requests.get('https://shopee.co.id/api/v4/product/get_shop_info', params = params_get_store)
-                    json_data_store = json.loads(response_store.text)
+                    
                     params_get_item_detail = (
                         ('itemid', item['item_basic']['itemid']),
                         ('shopid', item['item_basic']['shopid'])

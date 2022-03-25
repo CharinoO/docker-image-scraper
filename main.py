@@ -4,7 +4,6 @@ import streamlit as st
 from PIL import Image
 from exapackage.shop import Tokopedia
 from exapackage.keys import Tokopedia as TokpedKeys
-from exapackage.shopee_global import Shopee
 from exapackage.shopee_store_item import store_search
 from exapackage.shopee_store_item_all import store_all_search
 from exapackage.shopee_api import ShopeeKeyword
